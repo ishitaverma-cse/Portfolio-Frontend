@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:5000/api/cms";
+const API_URL = "https://portfolio-cms-my0b.onrender.com/api/cms";
 
 export const getAbout = async () => {
   const response = await fetch(`${API_URL}/about`);
