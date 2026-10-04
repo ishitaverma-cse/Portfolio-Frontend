@@ -1,14 +1,81 @@
-import { Link } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 
 function Navbar({ currentUser, onSignUp, onSignIn, onLogout }) {
+    const navigate = useNavigate();
+    const location = useLocation();
+
+    const [activeSection, setActiveSection] = useState("home");
+
+    const navItems = [
+        { label: "About", id: "about" },
+        { label: "Skills", id: "skills" },
+        { label: "Projects", id: "projects" },
+        { label: "Experience", id: "experience" },
+        { label: "Blogs", id: "blog" },
+        { label: "Testimonials", id: "testimonials" },
+    ];
+
+    useEffect(() => {
+        if (location.pathname !== "/") {
+            setActiveSection("");
+            return;
+        }
+
+        const sections = navItems
+            .map((item) => document.getElementById(item.id))
+            .filter(Boolean);
+
+        const observer = new IntersectionObserver(
+            (entries) => {
+                const visibleSections = entries
+                    .filter((entry) => entry.isIntersecting)
+                    .sort(
+                        (a, b) =>
+                            b.intersectionRatio - a.intersectionRatio
+                    );
+
+                if (visibleSections.length > 0) {
+                    setActiveSection(visibleSections[0].target.id);
+                }
+            },
+            {
+                root: null,
+                rootMargin: "-20% 0px -55% 0px",
+                threshold: [0.1, 0.25, 0.5],
+            }
+        );
+
+        sections.forEach((section) => observer.observe(section));
+
+        return () => observer.disconnect();
+    }, [location.pathname]);
+
+    const scrollToSection = (sectionId) => {
+        if (location.pathname !== "/") {
+            navigate("/");
+
+            setTimeout(() => {
+                document.getElementById(sectionId)?.scrollIntoView({
+                    behavior: "smooth",
+                });
+            }, 100);
+        } else {
+            document.getElementById(sectionId)?.scrollIntoView({
+                behavior: "smooth",
+            });
+        }
+    };
+
     return (
         <nav className="fixed left-0 right-0 top-0 z-50">
             <div className="mx-auto max-w-7xl px-4 pt-4 sm:px-6 lg:px-8">
-                <div className="flex items-center justify-between rounded-2xl border border-white/70 bg-white/75 px-5 py-3 shadow-sm backdrop-blur-xl">
+                <div className="flex items-center justify-between rounded-2xl border border-white/10 bg-[#111827] px-5 py-3 shadow-lg shadow-black/10">
 
                     {/* Brand */}
-                    <Link
-                        to="/"
+                    <button
+                        type="button"
+                        onClick={() => scrollToSection("home")}
                         className="flex items-center gap-3"
                     >
                         <img
@@ -17,56 +84,40 @@ function Navbar({ currentUser, onSignUp, onSignIn, onLogout }) {
                             className="h-10 w-10 rounded-lg object-cover"
                         />
 
-                        <span className="text-xl font-semibold tracking-tight text-gray-900">
+                        <span className="text-xl font-semibold tracking-tight text-white">
                             I.V Studio
                         </span>
-                    </Link>
+                    </button>
 
                     {/* Navigation Links */}
-                    <div className="hidden items-center gap-5 md:flex">
+                    <div className="hidden items-center gap-6 md:flex">
+                        {navItems.map((item) => {
+                            const isActive =
+                                activeSection === item.id &&
+                                location.pathname === "/";
 
-                        <Link
-                            to="/#about"
-                            className="text-sm font-medium text-gray-600 transition hover:text-gray-900"
-                        >
-                            About
-                        </Link>
+                            return (
+                                <button
+                                    key={item.id}
+                                    type="button"
+                                    onClick={() => scrollToSection(item.id)}
+                                    className={`group relative py-2 text-sm font-medium transition-colors duration-300 ${isActive
+                                            ? "text-white"
+                                            : "text-gray-300 hover:text-white"
+                                        }`}
+                                >
+                                    {item.label}
 
-                        <Link
-                            to="/skills"
-                            className="text-sm font-medium text-gray-600 transition hover:text-gray-900"
-                        >
-                            Skills
-                        </Link>
-
-                        <Link
-                            to="/projects"
-                            className="text-sm font-medium text-gray-600 transition hover:text-gray-900"
-                        >
-                            Projects
-                        </Link>
-
-                        <Link
-                            to="/experience"
-                            className="text-sm font-medium text-gray-600 transition hover:text-gray-900"
-                        >
-                            Experience
-                        </Link>
-
-                        <Link
-                            to="/testimonials"
-                            className="text-sm font-medium text-gray-600 transition hover:text-gray-900"
-                        >
-                            Testimonials
-                        </Link>
-
-                        <Link
-                            to="/blog"
-                            className="text-sm font-medium text-gray-600 transition hover:text-gray-900"
-                        >
-                            Blogs
-                        </Link>
-
+                                    {/* White Underline */}
+                                    <span
+                                        className={`absolute bottom-0 left-0 h-[2px] rounded-full bg-white transition-all duration-300 ${isActive
+                                                ? "w-full"
+                                                : "w-0 group-hover:w-full"
+                                            }`}
+                                    />
+                                </button>
+                            );
+                        })}
                     </div>
 
                     {/* Right Actions */}
@@ -74,49 +125,47 @@ function Navbar({ currentUser, onSignUp, onSignIn, onLogout }) {
 
                         {currentUser ? (
                             <>
-                                <div className="hidden items-center gap-2 rounded-full border border-gray-200 bg-white px-4 py-2 sm:flex">
-                                    <div className="flex h-7 w-7 items-center justify-center rounded-full bg-indigo-100 text-sm font-semibold text-indigo-600">
-                                        {currentUser.name?.charAt(0).toUpperCase()}
+                                {/* User */}
+                                <div className="hidden items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 sm:flex">
+                                    <div className="flex h-7 w-7 items-center justify-center rounded-full bg-white/10 text-sm font-semibold text-white">
+                                        {currentUser.name
+                                            ?.charAt(0)
+                                            .toUpperCase()}
                                     </div>
 
-                                    <span className="text-sm font-semibold text-gray-700">
+                                    <span className="text-sm font-semibold text-gray-200">
                                         Hi, {currentUser.name}
                                     </span>
                                 </div>
 
+                                {/* Logout */}
                                 <button
                                     type="button"
                                     onClick={onLogout}
-                                    className="rounded-full bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition-all duration-300 hover:bg-indigo-700 hover:shadow-md"                                >
+                                    className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-semibold text-gray-200 transition-all duration-300 hover:bg-white hover:text-gray-900"
+                                >
                                     Logout
                                 </button>
                             </>
                         ) : (
-                            <>
-                                <button
-                                    type="button"
-                                    onClick={onSignIn}
-                                    className="rounded-full border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-700 shadow-sm transition-all duration-300 hover:border-indigo-200 hover:bg-indigo-50 hover:text-indigo-600"
-                                >
-                                    Sign In
-                                </button>
-
-                                <button
-                                    type="button"
-                                    onClick={onSignUp}
-                                    className="rounded-full bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition-all duration-300 hover:bg-indigo-700 hover:shadow-md"
-                                >
-                                    Sign Up
-                                </button>
-                            </>
+                            /* Sign In */
+                            <button
+                                type="button"
+                                onClick={onSignIn}
+                                className="rounded-full border border-white/20 bg-white/5 px-4 py-2 text-sm font-semibold text-white transition-all duration-300 hover:bg-white hover:text-gray-900"
+                            >
+                                Sign In
+                            </button>
                         )}
 
-                        <Link
-                            to="/#contact"
-                            className="rounded-full bg-gray-900 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-indigo-600"
+                        {/* Let's Talk */}
+                        <button
+                            type="button"
+                            onClick={() => scrollToSection("contact")}
+                            className="rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-gray-900 shadow-sm transition-all duration-300 hover:bg-gray-200 hover:shadow-md"
                         >
                             Let&apos;s Talk
-                        </Link>
+                        </button>
 
                     </div>
                 </div>

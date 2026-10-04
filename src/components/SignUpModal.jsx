@@ -1,6 +1,12 @@
 import { useState } from "react";
 import { signupUser } from "../services/api";
-import { Eye, EyeOff, X, CheckCircle2, AlertCircle } from "lucide-react";
+import {
+    Eye,
+    EyeOff,
+    X,
+    CheckCircle2,
+    AlertCircle,
+} from "lucide-react";
 
 const SignUpModal = ({ onClose, onSignIn }) => {
     const [showPassword, setShowPassword] = useState(false);
@@ -111,187 +117,254 @@ const SignUpModal = ({ onClose, onSignIn }) => {
     };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4 backdrop-blur-sm">
 
-            <div className="relative w-full max-w-md rounded-2xl bg-white p-8 shadow-2xl">
+            <div className="relative flex w-full max-w-5xl overflow-hidden rounded-[2rem] bg-white shadow-[0_30px_90px_rgba(0,0,0,0.18)]">
 
                 {/* Close Button */}
                 <button
                     type="button"
                     onClick={onClose}
-                    className="absolute right-5 top-5 text-gray-400 transition hover:text-gray-700"
+                    className="absolute right-5 top-5 z-30 flex h-9 w-9 items-center justify-center rounded-full bg-white/90 text-gray-400 shadow-sm transition-all duration-300 hover:bg-gray-100 hover:text-gray-800"
                 >
-                    <X size={22} />
+                    <X size={18} />
                 </button>
 
-                {/* Header */}
-                <div className="mb-7 text-center">
-                    <h2 className="text-3xl font-bold text-gray-900">
-                        Create Account
-                    </h2>
+                {/* ================================================= */}
+                {/* LEFT — SIGN UP */}
+                {/* ================================================= */}
 
-                    <p className="mt-2 text-sm text-gray-500">
-                        Create your account to get started
-                    </p>
+                <div className="w-full px-8 py-10 sm:px-10 lg:w-[57%] lg:px-12 lg:py-12">
+
+                    {/* Header */}
+                    <div className="mb-8">
+
+                        <div className="mb-5 flex items-center gap-2">
+                            <div className="h-1.5 w-8 rounded-full bg-[#64748b]" />
+
+                            <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[#64748b]">
+                                I.V Studio
+                            </span>
+                        </div>
+
+                        <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+                            Create your account.
+                        </h2>
+
+                        <p className="mt-3 max-w-md text-sm leading-6 text-gray-500">
+                            Join the portfolio community and explore projects,
+                            experiences, and ideas.
+                        </p>
+                    </div>
+
+                    {/* Alerts */}
+                    {error && (
+                        <div className="mb-5 flex items-start gap-3 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
+                            <AlertCircle
+                                size={18}
+                                className="mt-0.5 shrink-0"
+                            />
+
+                            <span>{error}</span>
+                        </div>
+                    )}
+
+                    {success && (
+                        <div className="mb-5 flex items-start gap-3 rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-600">
+                            <CheckCircle2
+                                size={18}
+                                className="mt-0.5 shrink-0"
+                            />
+
+                            <span>{success}</span>
+                        </div>
+                    )}
+
+                    <form onSubmit={handleSubmit}>
+
+                        {/* Name + Email */}
+                        <div className="grid gap-4 sm:grid-cols-2">
+
+                            {/* Name */}
+                            <div>
+                                <label className="mb-2 block text-xs font-semibold uppercase tracking-wider text-gray-500">
+                                    Full Name
+                                </label>
+
+                                <input
+                                    type="text"
+                                    name="name"
+                                    value={formData.name}
+                                    onChange={handleChange}
+                                    placeholder="Your name"
+                                    className="w-full border-b border-gray-200 bg-transparent px-0 py-3 text-sm text-gray-900 outline-none transition-all duration-300 placeholder:text-gray-400 focus:border-[#64748b]"
+                                />
+                            </div>
+
+                            {/* Email */}
+                            <div>
+                                <label className="mb-2 block text-xs font-semibold uppercase tracking-wider text-gray-500">
+                                    Email Address
+                                </label>
+
+                                <input
+                                    type="email"
+                                    name="email"
+                                    value={formData.email}
+                                    onChange={handleChange}
+                                    placeholder="you@example.com"
+                                    className="w-full border-b border-gray-200 bg-transparent px-0 py-3 text-sm text-gray-900 outline-none transition-all duration-300 placeholder:text-gray-400 focus:border-[#64748b]"
+                                />
+                            </div>
+                        </div>
+
+                        {/* Password */}
+                        <div className="mt-7">
+
+                            <label className="mb-2 block text-xs font-semibold uppercase tracking-wider text-gray-500">
+                                Password
+                            </label>
+
+                            <div className="relative">
+                                <input
+                                    type={
+                                        showPassword
+                                            ? "text"
+                                            : "password"
+                                    }
+                                    name="password"
+                                    value={formData.password}
+                                    onChange={handleChange}
+                                    placeholder="Create a password"
+                                    className="w-full border-b border-gray-200 bg-transparent px-0 py-3 pr-10 text-sm text-gray-900 outline-none transition-all duration-300 placeholder:text-gray-400 focus:border-[#64748b]"
+                                />
+
+                                <button
+                                    type="button"
+                                    onClick={() =>
+                                        setShowPassword(!showPassword)
+                                    }
+                                    className="absolute right-0 top-1/2 -translate-y-1/2 text-gray-400 transition hover:text-[#64748b]"
+                                >
+                                    {showPassword ? (
+                                        <EyeOff size={18} />
+                                    ) : (
+                                        <Eye size={18} />
+                                    )}
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* Confirm Password */}
+                        <div className="mt-7">
+
+                            <label className="mb-2 block text-xs font-semibold uppercase tracking-wider text-gray-500">
+                                Confirm Password
+                            </label>
+
+                            <div className="relative">
+                                <input
+                                    type={
+                                        showConfirmPassword
+                                            ? "text"
+                                            : "password"
+                                    }
+                                    name="confirmPassword"
+                                    value={formData.confirmPassword}
+                                    onChange={handleChange}
+                                    placeholder="Repeat your password"
+                                    className="w-full border-b border-gray-200 bg-transparent px-0 py-3 pr-10 text-sm text-gray-900 outline-none transition-all duration-300 placeholder:text-gray-400 focus:border-[#64748b]"
+                                />
+
+                                <button
+                                    type="button"
+                                    onClick={() =>
+                                        setShowConfirmPassword(
+                                            !showConfirmPassword
+                                        )
+                                    }
+                                    className="absolute right-0 top-1/2 -translate-y-1/2 text-gray-400 transition hover:text-[#64748b]"
+                                >
+                                    {showConfirmPassword ? (
+                                        <EyeOff size={18} />
+                                    ) : (
+                                        <Eye size={18} />
+                                    )}
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* Submit */}
+                        <button
+                            type="submit"
+                            disabled={loading}
+                            className="mt-9 flex w-full items-center justify-center rounded-xl bg-[#111827] px-6 py-3.5 text-sm font-semibold text-white shadow-lg shadow-gray-200 transition-all duration-300 hover:-translate-y-0.5 hover:bg-gray-800 hover:shadow-xl disabled:cursor-not-allowed disabled:opacity-70"
+                        >
+                            {loading
+                                ? "Creating Account..."
+                                : "Create Account"}
+                        </button>
+                    </form>
+
+                    {/* Sign In */}
+                    <div className="mt-7 flex items-center justify-center gap-1.5 text-sm text-gray-500">
+                        <span>Already have an account?</span>
+
+                        <button
+                            type="button"
+                            onClick={onSignIn}
+                            className="font-semibold text-[#64748b] transition hover:text-[#374151]"
+                        >
+                            Sign In
+                        </button>
+                    </div>
                 </div>
 
-                {/* Error Alert */}
-                {error && (
-                    <div className="mb-5 flex items-start gap-3 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
-                        <AlertCircle
-                            size={18}
-                            className="mt-0.5 shrink-0"
-                        />
+                {/* ================================================= */}
+                {/* RIGHT — VISUAL */}
+                {/* ================================================= */}
 
-                        <span>{error}</span>
-                    </div>
-                )}
+                <div className="relative hidden w-[43%] overflow-hidden lg:block">
 
-                {/* Success Alert */}
-                {success && (
-                    <div className="mb-5 flex items-start gap-3 rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-600">
-                        <CheckCircle2
-                            size={18}
-                            className="mt-0.5 shrink-0"
-                        />
+                    <img
+                        src="https://images.unsplash.com/photo-1558655146-d09347e92766?auto=format&fit=crop&w=1000&q=85"
+                        alt="Creative workspace"
+                        className="absolute inset-0 h-full w-full object-cover"
+                    />
 
-                        <span>{success}</span>
-                    </div>
-                )}
+                    {/* Neutral Overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-br from-[#111827]/95 via-[#374151]/70 to-black/30" />
 
-                <form onSubmit={handleSubmit} className="space-y-5">
+                    {/* Decorative element */}
+                    <div className="absolute right-8 top-8 h-20 w-20 rounded-full border border-white/20" />
 
-                    {/* Name */}
-                    <div>
-                        <label className="mb-2 block text-sm font-medium text-gray-700">
-                            Full Name
-                        </label>
+                    <div className="absolute bottom-0 left-0 right-0 p-10 text-white">
 
-                        <input
-                            type="text"
-                            name="name"
-                            value={formData.name}
-                            onChange={handleChange}
-                            placeholder="Enter your name"
-                            className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
-                        />
-                    </div>
+                        <p className="mb-4 text-xs font-semibold uppercase tracking-[0.25em] text-gray-300">
+                            Developer Portfolio
+                        </p>
 
-                    {/* Email */}
-                    <div>
-                        <label className="mb-2 block text-sm font-medium text-gray-700">
-                            Email Address
-                        </label>
+                        <h3 className="max-w-sm text-3xl font-bold leading-tight">
+                            Ideas become
+                            <span className="block text-gray-300">
+                                digital experiences.
+                            </span>
+                        </h3>
 
-                        <input
-                            type="email"
-                            name="email"
-                            value={formData.email}
-                            onChange={handleChange}
-                            placeholder="Enter your email"
-                            className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
-                        />
-                    </div>
+                        <p className="mt-4 max-w-sm text-sm leading-6 text-white/75">
+                            Explore projects, technologies, and the work behind
+                            the interface.
+                        </p>
 
-                    {/* Password */}
-                    <div>
-                        <label className="mb-2 block text-sm font-medium text-gray-700">
-                            Password
-                        </label>
+                        <div className="mt-7 flex items-center gap-3">
+                            <div className="h-px w-10 bg-white/50" />
 
-                        <div className="relative">
-                            <input
-                                type={
-                                    showPassword
-                                        ? "text"
-                                        : "password"
-                                }
-                                name="password"
-                                value={formData.password}
-                                onChange={handleChange}
-                                placeholder="Create a password"
-                                className="w-full rounded-xl border border-gray-200 px-4 py-3 pr-12 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
-                            />
-
-                            <button
-                                type="button"
-                                onClick={() =>
-                                    setShowPassword(!showPassword)
-                                }
-                                className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700"
-                            >
-                                {showPassword ? (
-                                    <EyeOff size={19} />
-                                ) : (
-                                    <Eye size={19} />
-                                )}
-                            </button>
+                            <span className="text-xs font-medium uppercase tracking-wider text-white/60">
+                                I.V Studio
+                            </span>
                         </div>
                     </div>
-
-                    {/* Confirm Password */}
-                    <div>
-                        <label className="mb-2 block text-sm font-medium text-gray-700">
-                            Confirm Password
-                        </label>
-
-                        <div className="relative">
-                            <input
-                                type={
-                                    showConfirmPassword
-                                        ? "text"
-                                        : "password"
-                                }
-                                name="confirmPassword"
-                                value={formData.confirmPassword}
-                                onChange={handleChange}
-                                placeholder="Confirm your password"
-                                className="w-full rounded-xl border border-gray-200 px-4 py-3 pr-12 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
-                            />
-
-                            <button
-                                type="button"
-                                onClick={() =>
-                                    setShowConfirmPassword(
-                                        !showConfirmPassword
-                                    )
-                                }
-                                className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700"
-                            >
-                                {showConfirmPassword ? (
-                                    <EyeOff size={19} />
-                                ) : (
-                                    <Eye size={19} />
-                                )}
-                            </button>
-                        </div>
-                    </div>
-
-                    {/* Submit */}
-                    <button
-                        type="submit"
-                        disabled={loading}
-                        className="w-full rounded-xl bg-blue-600 py-3 font-semibold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-70"
-                    >
-                        {loading
-                            ? "Creating Account..."
-                            : "Create Account"}
-                    </button>
-                </form>
-
-                {/* Sign In Link */}
-                <p className="mt-6 text-center text-sm text-gray-500">
-                    Already have an account?{" "}
-
-                    <button
-                        type="button"
-                        onClick={onSignIn}
-                        className="font-semibold text-blue-600 hover:text-blue-700"
-                    >
-                        Sign In
-                    </button>
-                </p>
-
+                </div>
             </div>
         </div>
     );
