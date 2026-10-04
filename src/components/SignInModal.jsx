@@ -52,8 +52,13 @@ const SignInModal = ({ onClose, onSignUp, onLogin }) => {
                 localStorage.removeItem("token");
                 localStorage.removeItem("user");
 
+                const adminUrl =
+                    window.location.hostname === "localhost"
+                        ? "http://localhost:5174"
+                        : "https://iv-studio-admin.vercel.app";
+
                 window.location.href =
-                    `http://localhost:5174/auth-handoff?token=${encodeURIComponent(
+                    `${adminUrl}/auth-handoff?token=${encodeURIComponent(
                         data.token
                     )}&admin=${adminData}`;
 
